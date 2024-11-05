@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tourist-guide-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: tourist-guide
+  template:
+    metadata:
+      labels:
+        app: tourist-guide
+    spec:
+      containers:
+      - name: tourist-guide
+        image: tourist-guide-0.0.1-SNAPSHOT:latest 
+        ports:
+        - containerPort: 8080
+        env:
+        - name: SERVER_URL
+          value: "http://tourist-guide.fiap.com"
+        - name: SPRING_PROFILES_ACTIVE
+          value: "prod"
+        - name: SPRING_DATASOURCE_URL
+          valueFrom:
+            secretKeyRef:
+              name: my_db_secret
+              key: db_url
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tourist-guide-service
+spec:
+  selector:
+    app: tourist-guide
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: tourist-guide-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: tourist-guide.fiap.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: tourist-guide-service
+            port:
+              number: 8080

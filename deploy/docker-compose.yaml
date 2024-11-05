@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  minha-aplicacao:
+    image: tourist-guide-0.0.1-SNAPSHOT:latest 
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - SERVER_URL=${SERVER_URL}
+    env_file:
+      - .env
+

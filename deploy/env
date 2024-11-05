@@ -1,0 +1,5 @@
+SPRING_PROFILES_ACTIVE=prod
+SERVER_URL=http://tourist-guide.fiap.com
+DATABASE_URL=jdbc:oracle:thin:@oracle.fiap.com.br:1521:orcl
+DATABASE_USERNAME=rm553145S
+DATABASE_PASSWORD=260803
